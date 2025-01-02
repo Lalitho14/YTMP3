@@ -1,6 +1,4 @@
 import flet as ft
-from Downloader import DescargarMP3
-from AlertaSucces import AlertaDescarga
 from VideoItem import VideoItem
 
 
@@ -26,18 +24,27 @@ def main(page: ft.Page):
   lv = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
 
   def SetUrl(e):
-    url.value = e.data
-    vi = VideoItem(url=url.value, path=folder_selected.current)
+    vi = VideoItem(url=url.value, path=folder_selected.current, page=page)
     list_container.visible = True
     lv.controls.append(vi)
+    url.value = ""
     page.update()
+
+  buscar = ft.IconButton(
+    icon=ft.Icons.SEARCH,
+    icon_color=ft.Colors.WHITE,
+    bgcolor=ft.Colors.BLUE_900,
+    tooltip="Buscar URL",
+    on_click=SetUrl
+  )
 
   url = ft.SearchBar(
     view_elevation=4,
     divider_color=ft.Colors.PRIMARY,
     bar_hint_text="URL del video a convertir..",
     view_hint_text="URL de video YT",
-    on_submit=SetUrl
+    on_submit=SetUrl,
+    bar_trailing=[buscar]
   )
 
   anuncio = ft.Text(value="", visible=False)
@@ -69,7 +76,7 @@ def main(page: ft.Page):
         on_click=lambda _: folder_picker.get_directory_path()
       ),
       anuncio,
-      url,
+      url
     ],
     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     spacing=30
